@@ -1,0 +1,78 @@
+# Handle linting, formatting, testing with Golang
+# Requires a Makefile to be present.
+name: Golang-CI
+
+on:
+
+  workflow_call:
+
+jobs:
+
+  makefile-check:
+    name: makefile
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v3
+
+      - name: Makefile exists?
+        uses: ./.github/actions/makefile-check
+
+  fmt:
+    name: fmt
+    needs: [makefile-check]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Go
+        uses: actions/setup-go@v3
+
+      - name: Fmt
+        run: make fmt
+
+  vet:
+    name: vet
+    needs: [makefile-check]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Go
+        uses: actions/setup-go@v3
+
+      - name: Vet
+        run: make vet
+
+  lint:
+    name: lint
+    needs: [makefile-check]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Go
+        uses: actions/setup-go@v3
+
+      - name: Golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: latest
+
+  test:
+    name: Test
+    needs: [makefile-check]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Go
+        uses: actions/setup-go@v3
+
+      - name: Test
+        run: make test
+

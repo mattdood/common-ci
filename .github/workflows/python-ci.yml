@@ -1,0 +1,39 @@
+# Handle linting and testing using pre-commit and Pytest
+# TODO:
+#   * Should use Makefile as source of truth
+name: Python-CI
+
+on:
+
+  workflow_call:
+
+jobs:
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v3
+
+      - name: Install Requirements
+        run: pip install -r requirements-dev.txt
+
+      - name: Run Pre-Commit
+        run: pre-commit run --all-files
+
+  pytest:
+    name: Pytest
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+
+      - name: Checkout Code Repository
+        uses: actions/checkout@v3
+
+      - name: Install Requirements
+        run: pip install -r requirements-dev.txt
+
+      - name: Run tests
+        run: pytest -vv
+
