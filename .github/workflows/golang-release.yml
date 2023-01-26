@@ -1,0 +1,29 @@
+# Handle releasing Golang binary
+name: Golang-Release
+
+on:
+
+  workflow_call:
+
+jobs:
+
+  makefile-check:
+    name: makefile
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v3
+
+      - name: Makefile exists?
+        uses: ./.github/actions/makefile-check
+
+  echo-todo:
+    name: Echo TODO
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v3
+
+      - name: TODO
+        uses: ./.github/actions/echo-todo
+

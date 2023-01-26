@@ -1,0 +1,17 @@
+# Handle Terraform linting, formatting, testing
+name: Terraform
+
+on:
+
+  workflow_call:
+
+jobs:
+
+  echo-todo:
+    name: echo-todo
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo
+        shell: bash
+        run: echo "TODO"
+
