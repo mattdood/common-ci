@@ -1,0 +1,13 @@
+name: Makefile exists?
+description: Check to see if the Makefile exists
+
+runs:
+  using: composite
+  steps:
+
+    - shell: bash
+      run: |
+        [ -f "Makefile" ] \
+        && { echo "Makefile exists"; exit 0; } \
+        || { echo "Makefile does not exist"; exit 1; }
+
