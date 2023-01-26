@@ -1,0 +1,13 @@
+name: Echo TODO
+description: For when the CI hasn't been implemented
+
+runs:
+  using: composite
+  steps:
+
+    - name: echo-todo
+      steps:
+        - name: Echo
+          shell: bash
+          run: echo "TODO"
+
