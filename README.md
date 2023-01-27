@@ -23,6 +23,50 @@ project both in CICD and for local development
 ## Example setups
 A few examples are provided to illustrate the referencing.
 
+### Golang package
+A Golang package is likely going to need:
+1. CI job on every commit (fmt, lint, test)
+1. Binary release build on tag push to master/main
+
+#### Golang package CI and deployment
+This is an example setup for 2 pipelines, `CI` and `Release`.
+
+```yml
+# ci.yml
+name: CI
+
+on:
+    pull_request:
+    push:
+        branches: ["master", "main"]
+        paths-ignore: ["docs/**"]
+
+jobs:
+
+    ci:
+        uses: mattdood/common-ci/.github/workflows/golang-ci.yml@v0.0.0
+
+# release.yml
+name: Golang-Release
+
+on:
+
+    workflow_run:
+        workflows: [CI]
+        types: [completed]
+    tags:
+        - '*'
+
+jobs:
+
+    release:
+        uses: mattdood/workflows.github/workflows/golang-release.yml@v0.0.0
+        secrets:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+```
+
 ### Python packages
 A great example of how a Python package might be set up would be:
 1. CI jobs to run on every commit (lint/test)
@@ -40,6 +84,17 @@ completion status.
 ```yml
 # ci.yml
 name: CI
+
+on:
+    pull_request:
+    push:
+        branches: ["master", "main"]
+        paths-ignore: ["docs/**"]
+
+jobs:
+
+    ci:
+        uses: mattdood/common-ci/.github/workflows/python-ci.yml@v0.0.0
 
 # pypi-test.yml
 name: PyPI-Test

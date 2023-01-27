@@ -4,6 +4,9 @@ name: Golang-Release
 on:
 
   workflow_call:
+    secrets:
+      GITHUB_TOKEN:
+        required: true
 
 jobs:
 
@@ -17,13 +20,16 @@ jobs:
       - name: Makefile exists?
         uses: ./.github/actions/makefile-check
 
-  echo-todo:
-    name: Echo TODO
+  release:
+    name: Release binary for new version
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code Repository
-        uses: actions/checkout@v3
-
-      - name: TODO
-        uses: ./.github/actions/echo-todo
-
+      - uses: actions/checkout@v3
+      - uses: goreleaser/goreleaser-action@v4
+        with:
+          # either 'goreleaser' (default) or 'goreleaser-pro':
+          distribution: goreleaser
+          version: latest
+          args: release --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
