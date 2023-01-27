@@ -36,34 +36,34 @@ This is an example setup for 2 pipelines, `CI` and `Release`.
 name: CI
 
 on:
-    pull_request:
-    push:
-        branches: ["master", "main"]
-        paths-ignore: ["docs/**"]
+  pull_request:
+  push:
+    branches: ["master", "main"]
+    paths-ignore: ["docs/**"]
 
 jobs:
 
-    ci:
-        uses: mattdood/common-ci/.github/workflows/golang-ci.yml@v0.0.0
+  ci:
+    uses: mattdood/common-ci/.github/workflows/golang-ci.yml@v0.0.0
 
 # release.yml
 name: Golang-Release
 
 on:
 
-    workflow_run:
-        workflows: [CI]
-        types: [completed]
-    tags:
-        - '*'
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+  tags:
+    - '*'
 
 jobs:
 
-    release:
-        uses: mattdood/workflows.github/workflows/golang-release.yml@v0.0.0
-        secrets:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+  release:
+    uses: mattdood/workflows.github/workflows/golang-release.yml@v0.0.0
+    secrets:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
 ```
 
@@ -86,51 +86,51 @@ completion status.
 name: CI
 
 on:
-    pull_request:
-    push:
-        branches: ["master", "main"]
-        paths-ignore: ["docs/**"]
+  pull_request:
+  push:
+    branches: ["master", "main"]
+    paths-ignore: ["docs/**"]
 
 jobs:
 
-    ci:
-        uses: mattdood/common-ci/.github/workflows/python-ci.yml@v0.0.0
+  ci:
+    uses: mattdood/common-ci/.github/workflows/python-ci.yml@v0.0.0
 
 # pypi-test.yml
 name: PyPI-Test
 
 on:
 
-    workflow_run:
-        workflows: [CI]
-        types: [completed]
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
 
 jobs:
 
-    pypi-test:
-        uses: mattdood/workflows/.github/workflows/pypi-test.yml@v0.0.0
-        secrets:
-            TEST_PYPI_API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
-        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+  pypi-test:
+    uses: mattdood/workflows/.github/workflows/pypi-test.yml@v0.0.0
+    secrets:
+      TEST_PYPI_API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
 # pypi-prod.yml
 name: PyPI-Prod
 
 on:
 
-    workflow_run:
-        workflows: [CI]
-        types: [completed]
-    tags:
-        - '*'
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+  tags:
+    - '*'
 
 jobs:
 
-    pypi-prod:
-        uses: mattdood/workflows.github/workflows/pypi-prod.yml@v0.0.0
-        secrets:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
-        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+  pypi-prod:
+    uses: mattdood/workflows.github/workflows/pypi-prod.yml@v0.0.0
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 ```
 
