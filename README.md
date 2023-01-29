@@ -31,6 +31,11 @@ A Golang package is likely going to need:
 #### Golang package CI and deployment
 This is an example setup for 2 pipelines, `CI` and `Release`.
 
+**Note:** To utilize `golang-release.yml` you must have a Personal Access Token
+created at the `repo` level with write permissions to releases. This is because
+the `GITHUB_TOKEN` environment variable does not allow you to write from a called
+reusable workflow.
+
 ```yml
 # ci.yml
 name: CI
@@ -44,26 +49,31 @@ on:
 jobs:
 
   ci:
-    uses: mattdood/common-ci/.github/workflows/golang-ci.yml@v0.0.0
+    uses: mattdood/common-ci/.github/workflows/golang-ci.yml@v0.0.6
 
 # release.yml
 name: Golang-Release
 
 on:
 
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
-  tags:
-    - '*'
+  push:
+    branches: ["master", "main"]
+    tags:
+      - v*
 
 jobs:
 
+  # Technically both workflow_run and push will trigger
+  # the pipeline, then it will falsely try to create a release
+  # and fail. To avoid this, start with a ref on tags and
+  # successful completion of CI
   release:
-    uses: mattdood/workflows.github/workflows/golang-release.yml@v0.0.0
+    permissions:
+      contents: write
+    uses: mattdood/common-ci/.github/workflows/golang-release.yml@v0.0.6
     secrets:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+      GH_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
+    if: ${{ startsWith(github.ref, 'refs/tags/v')}}
 
 ```
 
@@ -118,11 +128,9 @@ name: PyPI-Prod
 
 on:
 
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
-  tags:
-    - '*'
+  push
+    tags:
+      - '*'
 
 jobs:
 
