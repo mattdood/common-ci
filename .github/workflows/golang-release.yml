@@ -24,13 +24,21 @@ jobs:
     name: Release binary for new version
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Code Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      - uses: actions/setup-go@v3
+      - name: Force git tags pull
+        run: git fetch --force --tags
+
+      - name: Setup Golang >=1.19
+        uses: actions/setup-go@v3
         with:
           go-version: '>=1.19'
 
-      - uses: goreleaser/goreleaser-action@v4
+      - name: GoReleaser Action
+        uses: goreleaser/goreleaser-action@v4
         with:
           # either 'goreleaser' (default) or 'goreleaser-pro':
           distribution: goreleaser
