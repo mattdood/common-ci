@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Makefile exists?
-        uses: mattdood/common-ci/.github/actions/makefile-check@v0.0.3
+        uses: mattdood/common-ci/.github/actions/makefile-check@v0.0.6
 
   release:
     name: Release binary for new version
